@@ -1,6 +1,8 @@
 import 'package:contador/models/lectura_model.dart';
 import 'package:flutter/material.dart';
 
+import 'package:barcode_scan/barcode_scan.dart';
+
 class ConteoPage extends StatefulWidget {
   @override
   _ConteoPageState createState() => _ConteoPageState();
@@ -101,7 +103,7 @@ class _ConteoPageState extends State<ConteoPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.qr_code),
-            onPressed: () {},
+            onPressed: _scanQR,
           ),
           IconButton(
             icon: Icon(Icons.camera_alt),
@@ -132,6 +134,22 @@ class _ConteoPageState extends State<ConteoPage> {
       ),
       //  floatingActionButton: _crearFlotantes(),
     );
+  }
+
+  _scanQR() async {
+    print('scanQR');
+
+    try {
+      var result = await BarcodeScanner.scan();
+
+      print(result.type); // The result type (barcode, cancelled, failed)
+      print(result.rawContent); // The barcode content
+      print(result.format); // The barcode format (as enum)
+      print(result.formatNote); // If a unknown format was scanned this fie
+
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Widget _crearInput(BuildContext context) {

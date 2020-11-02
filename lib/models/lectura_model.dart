@@ -1,8 +1,8 @@
 class Lectura {
-  int cantidad = 1;
-  int conteo;
   int area;
   int orden;
+  int conteo;
+  int cantidad = 1;
 
   String id;
   String estado;
