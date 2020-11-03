@@ -1,10 +1,11 @@
 class Lectura {
+  int id;
+  int rowid;
   int area;
   int orden;
   int conteo;
   int cantidad = 1;
 
-  String id;
   String estado;
   String contador;
   String barCode = '';
@@ -15,6 +16,7 @@ class Lectura {
 
   Lectura({
     this.id,
+    this.rowid,
     this.area,
     this.conteo,
     this.contador,
@@ -29,6 +31,7 @@ class Lectura {
 
   factory Lectura.fromJson(Map<String, dynamic> json) => Lectura(
         id: json["id"],
+        rowid: json["rowid"],
         area: json["area"],
         conteo: json["conteo"],
         contador: json["contador"],
@@ -43,6 +46,7 @@ class Lectura {
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "rowid": rowid,
         "area": area,
         "conteo": conteo,
         "contador": contador,
