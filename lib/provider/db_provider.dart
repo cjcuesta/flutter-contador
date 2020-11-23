@@ -8,6 +8,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:contador/models/lectura_model.dart';
 export 'package:contador/models/lectura_model.dart';
 
+import 'package:provider/provider.dart';
+import 'package:contador/provider/socket_services.dart';
+
 class DBProvider {
   static Database _database;
   static final DBProvider db = DBProvider._(); //Constructor privado
@@ -53,9 +56,35 @@ class DBProvider {
 
     final res = db.insert('Lecturas', lectura.toJson());
 
+    print(lectura.toJson());
+
     res.then((value) {
       print('Inserto: $value');
       lectura.id = value;
+    });
+
+    return res;
+  }
+
+  nuevoScan2(Lectura lectura, SocketService socketService) async {
+    final db = await database;
+
+    final res = db.insert('Lecturas', lectura.toJson());
+
+    //print(lectura.toJson());
+
+    res.then((value) {
+      print('Inserto: $value');
+      lectura.id = value;
+
+      //final socketService = Provider.of<SocketService>(context);
+
+      if (socketService.serverStatus == ServerStatus.Online) {
+        socketService.socket.emit('add-lectura', lectura.toJson());
+        //socketService.socket.emit('add-cantidad', {'id': lectura.id});
+      } else {
+        print('no esta conectado...');
+      }
     });
 
     return res;
@@ -152,7 +181,26 @@ class DBProvider {
 
   Future<int> deleteScan(int id) async {
     final db = await database;
-    final res = db.delete('Lecturas', where: ' id: ? ', whereArgs: [id]);
+    final res = db.delete("Lecturas", where: "rowid = ?", whereArgs: [id]);
+
+    res.then((value) => print('Borró: $value'));
+
+    return res;
+  }
+
+  Future<int> deleteScan2(int id, SocketService socketService) async {
+    final db = await database;
+    final res = db.delete("Lecturas", where: "rowid = ?", whereArgs: [id]);
+
+    res.then((value) {
+      if (socketService.serverStatus == ServerStatus.Online) {
+        socketService.socket.emit('delete-lectura', {'id': id});
+        //socketService.socket.emit('add-cantidad', {'id': lectura.id});
+      } else {
+        print('no esta conectado...');
+      }
+      print('Borró: $value');
+    });
 
     return res;
   }
